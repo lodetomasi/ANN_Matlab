@@ -1,0 +1,85 @@
+hidden_layers =[8];
+2
+3 load ('test .mat ')
+4
+5 input =[d;u;y];
+6 t=x;
+7
+8
+9 [I N]= size ( input );
+10 [D N]= size (t);
+11
+12 net = feedforwardnet ( hidden_layers ); %la rete e' una feedforward
+13 net = init ( net );% inizializzo i pesi
+14
+15 et. trainFcn ='trainbr ';
+16 %l' algoritmo di apprendimento e' un backprop di levenberg - maqrquandt
+17
+18
+19 A= net . input . processFcns ;
+20 B=net. output . processFcns ;
+21
+22
+23 processFcns ={ 'mapminmax '} ; % mapminmax processes matrices
+24 by normalizing the minimum and maximum values of each row to
+25
+26
+27
+28 net . input . processFcns ={};
+29
+30 net . output . processFcns ={};
+31
+32 [net ,tr ,y,e]= train (net ,input ,t); % allenamento della rete .
+33
+34
+35
+36 % Pesi e bias ottenuti dall ' apprendimento della rete neurale
+37
+38 IW= net.IW {1 ,1};
+39 n= size ( hidden_layers ,2);
+40 LayersWeight = cell (1,n);
+41 bias = cell (1,n +1);
+42 bias {1}= net.b {1};
+43
+44
+45
+46 for k =1:n
+47 LayersWeight {k}= net.LW{k+1,k};
+48 bias {k +1}= net.b{k +1};
+49 end
+50
+51
+52
+44
+53 % % implementazione della BP
+54
+55 y1=BP(input ,IW , LayersWeight ,bias ,N,n);
+56 err =abs(y1 -t);
+57
+58
+59 Yneu =y1;
+60
+61 [a,b]= rsquare (t,y1 ); % Error computation
+62 fprintf ('rete   2013( Testing )  RMSE (W): %.2f, R2: %.3f,  RMSE / peak   %0.4f,
+63 NRMSD :  %0.2 f \n\n'...
+64 ,b,a ,(b/max(t (1 ,:))) ,(100* b/( max(t(1 ,:)) - min(t (1 ,:)))));
+65
+66 load ('tTest ');
+67 figure (1)
+68 subplot (2 ,1 ,1)
+69 plot (tTest ,y1 (1 ,:) , 'LineWidth ' ,1.5)
+70 datetick ('x','dd/mm ');
+71
+72 xlabel ('time ')
+73 ylabel ('Temperature  (C)')
+74 hold on
+75 plot (tTest ,t(1 ,:) , '-','LineWidth ' ,1.5);
+76 datetick ('x','dd/mm ');
+77 legend ( 'predicted ', '  Real ')
+78 subplot (2 ,1 ,2)
+79 plot (tTest ,abs(err (1 ,:)) , 'LineWidth ' ,1.5);
+80 datetick ('x','dd/mm ');
+81
+82 xlabel ('time ')
+83 legend ( 'Error ')
+84 ylabel ('Error  (C)')
