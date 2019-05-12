@@ -1,0 +1,13 @@
+
+Matlab implementation of backprogation. The Bp is a method for gradient descent optiziation
+
+function [y] = BP(input , IW , LayersWeight , bias , N, i)
+%BP Implementazione della BP
+ % .
+if i >0
+x=BP(input , IW , LayersWeight , bias , N, i -1);
+y= bias {i +1}+ LayersWeight {i}* tansig (x);
+else
+y= bias {1}* ones (1,N)+ IW* input ;
+end
+end
