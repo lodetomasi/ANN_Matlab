@@ -1,0 +1,85 @@
+hidden_layers =[8];
+2 load ('test .mat ')
+3
+4 input =[d;u;x];
+5 t=y;
+6 % d_kappa1 = d_kappa1 ';
+7 % input =[x u d]';
+8 %t=y ';
+9
+10 [I N]= size ( input );
+11 [D N]= size (t);
+12
+13 net = feedforwardnet ( hidden_layers ); %la rete e' una feedforward
+14 net = init ( net );% inizializzo i pesi
+15
+16 net . trainFcn ='trainbr '; %l' algoritmo di apprendimento e'
+17 un backprop di levenberg - maqrquandt
+18
+19
+20 A= net . input . processFcns ;
+21 B= net . output . processFcns ;
+22
+23 processFcns ={ 'mapminmax '} ; % mapminmax processes matrices
+24 by normalizing the minimum and maximum values of each row to
+25
+26 net . input . processFcns ={};
+27
+28 net . output . processFcns ={};
+29
+30 [net ,tr ,y,e]= train (net ,input ,t); % allenamento della rete .
+31
+32 err1 = sqrt (mse(e));
+33
+34 % Pesi e bias ottenuti dall ' apprendimento della rete neurale
+35 IW= net.IW {1 ,1};
+36
+37
+38 n= size ( hidden_layers ,2);
+39 LayersWeight = cell (1,n);
+42
+40 bias = cell (1,n +1);
+41 bias {1}= net.b {1};
+42
+43 for k =1:n
+44 LayersWeight {k}= net.LW{k+1,k};
+45 bias {k +1}= net.b{k +1};
+46 end
+47
+48
+49
+50 % % implementazione della BP
+51 % load (' test .mat ')
+52 % input =[d;u;x];
+53 % t=y;
+54
+55 y1=BP(input ,IW , LayersWeight ,bias ,N,n);
+56 err =abs(y1 -t);
+57
+58 Yneu =y1;
+59
+60 [a,b]= rsquare (t,y1 ); % Error computation
+61 fprintf ('Neural   Network   2018( Testing )  RMSE (W): %.2f, R2: %.3f,
+62   RMSE / peak   %0.4f,  NRMSD :  %0.2 f \n\n'...
+63 ,b,a ,(b/max(t )) ,(100* b/( max(t)-min(t ))));
+64
+65 load ('tTest ');
+66 figure (1)
+67 subplot (2 ,1 ,1)
+68 plot (tTest ,abs(y1),'r','LineWidth ' ,1.5)
+69 datetick ('x','dd/mm ');
+70 xlabel ('time ')
+71 ylabel ('Power  (kW)')
+72
+73 hold on
+74 plot (tTest ,t,'--','LineWidth ' ,1.5);
+75 datetick ('x','dd/mm ');
+76 legend ( 'predict ', '  Real ')
+77 hold off
+78
+79 subplot (2 ,1 ,2)
+80 plot (tTest ,abs( sqrt (err )), 'LineWidth ' ,1.5)
+81 datetick ('x','dd/mm ');
+82 legend ( 'Error ')
+83 xlabel ('time ')
+84 ylabel ('Error  (Kw)')
